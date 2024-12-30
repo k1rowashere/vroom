@@ -1,0 +1,25 @@
+{% macro selector(name, label, options, placeholder='') %}
+<div>
+  <label for="{{ name }}"
+         class="block font-medium text-gray-900 dark:text-white mb-1"
+  >
+    {{ label }}
+  </label>
+  <select id="{{ name }}" name="{{ name }}"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm
+        rounded-lg focus:ring-amber-500 focus:border-amber-500 block w-full
+        dark:placeholder-gray-400 dark:text-white dark:focus:ring-amber-500
+        p-2 .5 dark:bg-gray-700 dark:border-gray-600
+        dark:focus:border-amber-500"
+  >
+    <option selected disabled>
+      {{ placeholder }}
+    </option>
+    {% for option in options %}
+      <option value="{{ option.value }}">
+        {{ option.label }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+{% endmacro %}

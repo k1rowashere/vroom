@@ -1,0 +1,38 @@
+<div class="sticky flex flex-col gap-4 top-[4.5rem]
+  backdrop-blur-3xl
+  bg-gradient-to-t from-slate-100/80 dark:from-slate-950/80 to-transparent p-6 xl:px-12"
+>
+  <div class="flex gap-4">
+    {{ button.button(icon='fa-chevron-left', text='Go Back') }}
+    <h1 class="text-3xl font-semibold">
+      Checkout
+      <i class="fa-solid fa-check-double"></i>
+    </h1>
+  </div>
+  <div class="grid grid-cols-7 grid-rows-2 items-center 
+    justify-items-center text-center self-center max-w-2prose"
+  >
+    {% for i in "1234" %}
+      <div
+        class="rounded-full border-amber-400 ring-2 ring-amber-400 ring-inset text-3xl text-center content-center w-12 font-bold aspect-square
+          {% if loop.index <= curr_step %}bg-amber-400{% endif %}"
+      >
+        {% if not loop.last %}
+          {{ loop.index }}
+        {% else %}
+          <i class="fa-solid fa-check text-2xl"></i>
+        {% endif %}
+      </div>
+      {% if not loop.last %}
+        <i class="w-full h-0.5 fa-solid fa-arrow-right text-2xl
+                    {% if loop.index < curr_step %}text-amber-400{% endif %}"
+        ></i>
+      {% endif %}
+    {% endfor %}
+    <div>Vehicle Review</div>
+    <div></div>
+    <div>Personal Info</div>
+    <div></div>
+    <div>Payment Info</div>
+  </div>
+</div>

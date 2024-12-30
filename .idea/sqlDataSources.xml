@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="e0bbc5a4-7c08-42bf-ac57-2d2e9b929afe" name="DDL data source Mapping">
+      <data-sources db="9d256c9d-57cd-4d3b-9289-e74bc4eab3aa" ddl="8090d02b-6165-42d2-9092-2028c89d056c" />
+      <scope>
+        <node negative="1">
+          <node kind="database" negative="1" />
+          <node kind="database" qname="@">
+            <node kind="schema" qname="@" />
+          </node>
+        </node>
+      </scope>
+    </mapping>
+    <mapping uuid="b4efaeff-dd73-4616-8863-ea4274cbed60" name="DDL data source Mapping [2]">
+      <data-sources db="9d256c9d-57cd-4d3b-9289-e74bc4eab3aa" ddl="1574393f-71b9-44c8-81d3-d78a76431b58" />
+      <scope>
+        <node kind="database" qname="postgres" />
+      </scope>
+    </mapping>
+    <mapping uuid="7e0fc494-274f-47e8-b143-fe77ef9c6b9f" name="DDL data source Mapping">
+      <data-sources db="9d256c9d-57cd-4d3b-9289-e74bc4eab3aa" ddl="edfc9d07-fe89-4b4d-9928-8479ef6f666e" />
+      <scope>
+        <node kind="database" qname="@">
+          <node kind="schema" qname="@" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+  <component name="SqlDataSourceStorage">
+    <option name="dataSources">
+      <list>
+        <State>
+          <option name="id" value="edfc9d07-fe89-4b4d-9928-8479ef6f666e" />
+          <option name="name" value="DDL data source" />
+          <option name="dbmsName" value="POSTGRES" />
+          <option name="urls">
+            <array>
+              <option value="file://$PROJECT_DIR$/schema" />
+            </array>
+          </option>
+          <option name="outLayout" value="File per object by schema.groovy" />
+        </State>
+      </list>
+    </option>
+  </component>
+</project>

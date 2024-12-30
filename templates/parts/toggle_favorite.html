@@ -1,0 +1,8 @@
+{% import 'components/button.html' as button %}
+<input type="hidden" name="model_id" class="hidden"
+       value="{{ vehicle_id }}"
+/>
+{{ csrf_input }}
+{{ button.button(icon=in_favorites and "fa-star" or "fa-regular fa-star",
+   text="", style=None, type='submit') }}
+

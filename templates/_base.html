@@ -1,0 +1,101 @@
+{% import 'components/button.html' as button %}
+{% import 'components/inputs/search_bar.html' as search_bar %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ static('style/style.css') }}" />
+  <link href="{{ static('fontawesomefree/css/fontawesome.css') }}"
+        rel="stylesheet"
+        type="text/css"
+  >
+  <link href="{{ static('fontawesomefree/css/solid.css') }}"
+        rel="stylesheet"
+        type="text/css"
+  >
+  <link href="{{ static('fontawesomefree/css/regular.css') }}"
+        rel="stylesheet"
+        type="text/css"
+  >
+  <script src="{{ static('js/htmx.min.js') }}"></script>
+  <script defer src="{{ static('js/main.js') }}"></script>
+  <script src="{{ static('js/flowbite.min.js') }}"></script>
+  <title>{% block title %}{% endblock title %} - DB Project</title>
+  {% block head %}
+  {% endblock head %}
+</head>
+{#<a href="https://www.freepik.com/free-vector/grunge-tire-print-marks-background_2870370.htm#fromView=keyword&page=1&position=4&uuid=9c01117c-4dc8-4db4-925a-243b707a9be4">Image by starline on Freepik</a>#}
+<body hx-ext="multi-swap" hx-boost="true"
+      class="flex min-h-dvh bg-gray-100 text-gray-900 dark:bg-slate-950 
+      dark:text-white"
+>
+{% block body %}
+  <nav
+    class="top-0 z-50 sticky bg-amber-700 text-white border-gray-200
+      w-full flex flex-wrap items-center justify-between mx-auto p-4 gap-4 md:px-8"
+  >
+    <a href="/" class="flex items-center gap-2">
+      <i class="fa-solid fa-xl fa-car"></i>
+      <span class="self-center text-2xl font-semibold whitespace-nowrap">
+        Vroom.
+      </span>
+    </a>
+    <div
+      id="navbar-search"
+      class="items-center justify-between hidden max-md:w-full md:grow
+        md:flex max-md:order-last"
+    >
+      <div class="md:order-last grow px-12 relative group">
+        {% call search_bar.search_bar(name='search', placeholder='Search Catalog...') %}
+          hx-get="/api/html/text_search"
+          hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
+          hx-target="#navbar-search-result"
+        {% endcall %}
+        <div id="navbar-search-result"
+             class="absolute w-full left-0 right-0 flex-col bg-white/80 border
+             border-gray-200 rounded-lg shadow dark:bg-slate-800/80
+             dark:border-slate-700/80 backdrop-blur-2xl p-4 pl-6 mt-2 gap-2 
+             group-focus-within:flex hidden text-gray-900 dark:text-white"
+        >
+          No results found.
+        </div>
+
+      </div>
+
+      <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border
+      border-gray-100 rounded-lg md:flex-row md:mt-0 md:border-0 gap-2"
+      >
+        {% for link in nav_links %}
+          <li>
+            <a href="{{ link.url }}"
+               class="block py-2 px-3 text-white rounded 
+               aria-[current]:opacity-80 aria-[current]:underline 
+               aria-[current]:bold
+               hover:text-bold"
+            >
+              {{ link.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+      <a href="/cart" type="button">
+        <i class="fa-solid fa-xl fa-cart-shopping"></i>
+      </a>
+      <button type="button" data-collapse-toggle="navbar-search"
+              aria-controls="navbar-search" aria-expanded="false"
+              class="md:hidden"
+      >
+        <i class="fa-solid fa-xl fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+  <main class="grow {% block main_class %}{% endblock %}">
+    {% block main %}
+    {% endblock main %}
+  </main>
+{% endblock body %}
+</body>
+</html>

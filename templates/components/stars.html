@@ -1,0 +1,18 @@
+<div class="flex items-center mt-2.5 mb-5">
+ {% set rating = rating|default(0) %} 
+  {% for i in "12345" %}
+    {% set a = (rating * 2)|round / 2 + 0.5 %}
+    {% if loop.index <= rating %}
+      <i class="fa-solid fa-star text-yellow-500"></i>
+    {% elif loop.index <= a %}
+      <i class="fa-solid fa-star-half-alt text-yellow-500"></i>
+    {% else %}
+      <i class="fa-regular fa-star text-gray-600"></i>
+    {% endif %}
+  {% endfor %}
+  <span
+    class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3"
+  >
+    {{ rating }}
+  </span>
+</div>

@@ -1,0 +1,17 @@
+{% if vehicle.price_per_day %}
+  <span
+    class="text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap after:content-['/day'] after:text-gray-700 dark:after:text-gray-400 after:text-sm"
+  >
+        {{ currency | default('$') }}{{ vehicle.price_per_day }} 
+  </span>
+{% endif %}
+{% if vehicle.price_per_day and vehicle.price_per_hour %}
+  <span>or</span>
+{% endif %}
+{% if vehicle.price_per_hour %}
+  <span
+    class="text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap after:content-['/day'] after:text-gray-700 dark:after:text-gray-400 after:text-sm"
+  >
+     {{ currency | default('$') }}{{ vehicle.price_per_day }}
+  </span>
+{% endif %}

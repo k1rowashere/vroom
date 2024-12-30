@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+{% import "components/inputs/dual_slider.html" as dual_slider %}
+{% import "components/inputs/date_range.html" as date_range %}
+{% import "components/inputs/selector.html" as selector %}
+{% import "components/inputs/search_bar.html" as search_bar %}
+{% import "components/button.html" as button %}
+
+{% block title %}Catalog{% endblock title %}
+{% block main_class %}flex max-md:flex-col max-md:justify-center gap-16 p-4 pt-10 h-full{% endblock %}
+{% block main %}
+  <form class="flex flex-col top-28 gap-4 
+    border-gray-200 rounded-lg shadow dark:bg-slate-800/80
+    bg-white/80 dark:border-slate-700 backdrop-blur-2xl p-6"
+        hx-get="/api/html/vehicle_serach_pub/"
+  >
+    <h2 class="flex gap-2 text-2xl text-yellow-500 font-bold">
+      <i class="fa-solid fa-filter"></i>
+      Refine Search
+    </h2>
+
+    {{ dual_slider.dual_slider(name='price_range', label='Price Range', min=0, max=1000) }}
+    {{ date_range.date_range(label='Reservation Dates', name='reservation') }}
+    {{ selector.selector(options=options, name='vehicle_type', label='Vehicle Type', placeholder='Select Car Type') }}
+    {{ search_bar.search_bar(name='model', label='Vehicle Model', placeholder='Search car models...') }}
+    {{ button.button('Find', icon='fa-magnifying-glass') }}
+  </form>
+  <div class="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 w-full justify-center"
+       hx-get="/api/html/search_car_catalog/"
+       hx-trigger="load"
+  >
+    <div class="flex gap-10 text-9xl col-span-full self-center mx-auto opacity-80">
+      {% include 'components/spinner.svg' %}
+    </div>
+  </div>
+
+{% endblock main %}

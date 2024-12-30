@@ -1,0 +1,56 @@
+{% extends '_base.html' %}
+{% import 'components/button.html' as button %}
+{% block title %}Cart{% endblock %}
+{% block main_class %}{% endblock %}
+{% block main %}
+  <div class="sticky flex gap-4 top-[4.5rem] backdrop-blur-3xl bg-gradient-to-t from-slate-100/80 dark:from-slate-950/80 to-transparent p-6 xl:px-12"
+  >
+    {{ button.button(icon='fa-chevron-left', text='Go Back') }}
+    <h1 class="text-3xl font-semibold">
+      Favorite Items
+      <i class="fa-regular fa-star text-yellow-500"></i>
+    </h1>
+  </div>
+  <div class="flex flex-col gap-4 w-full items-center max-w-2prose mx-auto">
+    {% for vehicle in cart %}
+      <div class="grid grid-cols-[2.5rem_1fr_1fr_16rem] pr-4 rounded-lg
+        w-full bg-white dark:bg-gray-800 shadow dark:shadow-amber-800"
+      >
+        <button hx-post="/cart/remove/{{ vehicle.id }}"
+                hx-target="closest .grid"
+                hx-swap="outerHTML"
+                class="py-2 text-white bg-red-500 rounded-l-lg hover:bg-red-600"
+        >
+          <i class="fa-solid fa-trash"></i>
+        </button>
+        <a href="{{ vehicle.url }}" class="h-full">
+          <img class="max-h-56 min-h-full w-full object-cover"
+               src="{{ vehicle.image_urls.0 }}"
+               alt="product image"
+          />
+        </a>
+        <div class="p-4">
+          <a href="{{ vehicle.url }}"
+             class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-3"
+          >
+            {{ vehicle.display_name }}
+          </a>
+          {# TODO: #} Saved Date: {{ vehicle.saved_date }}
+          {% with rating=vehicle.rating %}
+            {% include 'components/stars.html' %}
+          {% endwith %}
+        </div>
+        <div class="flex flex-col gap-2 my-auto">
+          {{ button.button(icon='fa-arrow-alt-circle-right', text='Rent Now') }}
+          {% include 'components/pricing.html' %}
+        </div>
+      </div>
+    {% else %}
+      <span class="text-4xl self-center w-full h-full text-center"> Your cart is empty. 😭 </span>
+      <img class="w-1/3 aspect-auto self-center"
+           src="{{ static('assets/za3lan.jpg') }}"
+           alt="Empty"
+      >
+    {% endfor %}
+  </div>
+{% endblock main %}

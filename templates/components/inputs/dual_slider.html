@@ -1,0 +1,61 @@
+{% macro dual_slider(name, label, min, max, initial_min=None, initial_max=None) %}
+<fieldset class="dual-range-slider w-full flex flex-col gap-4">
+  <legend> {{ label }} </legend>
+  <div class="flex justify-between">
+    <div data-name="min-output" class="font-bold text-xl before:content-['$']">
+      {{ initial_min|default(min) }}
+    </div>
+    <div data-name="max-output" class="font-bold text-xl before:content-['$']">
+      {{ initial_max|default(max) }}
+    </div>
+  </div>
+  <div class="group relative flex items-center w-full h-full">
+    <div class="absolute flex items-center left-3 right-4 h-4">
+      <div data-name="left-track"
+           class="absolute rounded-md bg-gray-300 mx-2 h-2 w-auto left-0"
+      ></div>
+      <div data-name="right-track"
+           class="absolute rounded-md bg-gray-300 mx-2 h-2 w-auto right-0"
+      ></div>
+      <div data-name="range-track"
+           class="absolute top-1 rounded-full bg-amber-500 h-2"
+      ></div>
+      <span data-name="left-bulb"
+            class="absolute z-[1] -top-1.5 -ml-2.5 w-6 h-6 rounded-full bg-white shadow-md cursor-pointer"
+      ></span>
+      <span data-name="right-bulb"
+            class="absolute z-10 -top-1.5 -ml-2.5 w-6 h-6 rounded-full bg-white
+      shadow-md cursor-pointer"
+      ></span>
+    </div>
+
+    <input data-name="min"
+           type="range"
+           aria-label="min {{ label }}"
+           name="{{ name + '_min' }}"
+           class="absolute z-[1] w-full h-4 opacity-0 cursor-pointer pointer-events-none"
+           tabindex="0"
+           max="{{ max }}"
+           min="{{ min }}"
+           value="{{ initial_min|default(min) }}"
+           step="1"
+    />
+
+    <input data-name="max"
+           type="range"
+           aria-label="max {{ label }}"
+           name="{{ name + '_max' }}"
+           class="absolute z-10 w-full h-4 opacity-0 cursor-pointer pointer-events-none"
+           tabindex="0"
+           max="{{ max }}"
+           min="{{ min }}"
+           value="{{ initial_max|default(max) }}"
+           step="1"
+    />
+  </div>
+  <div class="flex justify-between text-gray-600 dark:text-gray-400">
+    <span>${{ min }}</span>
+    <span>${{ max }}</span>
+  </div>
+</fieldset>
+{% endmacro %}

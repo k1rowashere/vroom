@@ -1,0 +1,57 @@
+{% extends '_base.html' %}
+{% block title %}Home{% endblock title %}
+{% block main %}
+  <div class="h-[calc(100dvw)]"></div>
+  <div class="top-64 fixed w-full">
+    <div id="title"
+         class="flex items-center justify-center text-9xl font-bold mt-10
+         space-x-6"
+    >
+      <i class="fa-solid fa-car"></i>
+      <span>Vr</span>
+      <span class="text-8xl flex -mb-4 gap-2">
+      {% include 'components/spinner.svg' %}
+      {% include 'components/spinner.svg' %}
+    </span>
+      <span>m.</span>
+    </div>
+  </div>
+  {#  <div class="w-11/12 md:w-10/12 lg:w-9/12 xl:w-8/12 bg-black rounded-lg shadow-lg overflow-hidden relative">#}
+  {#    <div class="photo-slider" id="photoSlider">#}
+  {#      <img src="fall-friendly-orange-cars.webp" class="photo" alt="Car Image 1">#}
+  {#      <img src="360_F_537325726_GtgjRiyc37BLPn9OmisBVVZec9frLaL0.jpg"#}
+  {#           class="photo"#}
+  {#           alt="Car Image 2"#}
+  {#      >#}
+  {#      <img src="black-sports-car-is-parked-street-with-leaves-turning-yellow_1322455-28282.avif"#}
+  {#           class="photo"#}
+  {#           alt="Car Image 3"#}
+  {#      >#}
+  {#    </div>#}
+  {#    <button class="absolute left-4 top-1/2 transform -translate-y-1/2 nav-button p-2 rounded-full"#}
+  {#            id="prevBtn"#}
+  {#    >&#10094;#}
+  {#    </button>#}
+  {#    <button class="absolute right-4 top-1/2 transform -translate-y-1/2 nav-button p-2 rounded-full"#}
+  {#            id="nextBtn"#}
+  {#    >&#10095;#}
+  {#    </button>#}
+  {#  </div>#}
+  <div class="h-dvh flex items-center justify-center">
+    <div class=" w-11/12 md:w-10/12 lg:w-9/12 xl:w-8/12 text-center mt-10 p-6 bg-gray-800 rounded-lg shadow-lg">
+      <h2 class="text-3xl font-bold mb-4">About Us</h2>
+      <p class="text-lg leading-relaxed">
+        Welcome to VROOM! We are passionate about cars and dedicated to providing you with the best experience in automotive culture. Our team is committed to bringing you the latest news, insights, and trends in the automotive world. Join us on this exciting journey as we explore everything from classic cars to modern innovations. Thank you for being part of our community!
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("scroll", () => {
+      // animate move title right when scrolling down and left when scrolling up
+      const title = document.getElementById("title");
+      const currentScrollY = window.scrollY;
+      title.style.transform = `translateX(${currentScrollY}px)`;
+    });
+  </script>
+{% endblock main %}

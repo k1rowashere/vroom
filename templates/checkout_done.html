@@ -1,0 +1,10 @@
+{% extends "_base.html" %}
+{% block title %}Checkout - Step 2{% endblock title %}
+{% block main %}
+  {% with curr_step=3 %}
+    {% include '_checkout_base.html' %}
+  {% endwith %}
+  <div class="max-w-2prose max-w-lg flex flex-col items-center mx-auto">
+  DONE
+  </div>
+{% endblock main %}

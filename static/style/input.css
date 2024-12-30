@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+:root {
+    color-scheme: light dark;
+}
+
+@theme {
+    --container-2prose: calc(var(--container-prose, 65ch) * 2);
+}
+
+@layer base {
+    .htmx-indicator {
+        display: none;
+
+        &.htmx-request,
+        & .htmx-request {
+            display: block;
+        }
+    }
+
+    *:focus-visible {
+        @apply ring-2 ring-amber-300 outline-none;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea,
+    select {
+        @apply rounded border border-amber-500 p-2 shadow ring-amber-400 transition-all focus:border-blue-700 focus:ring-2;
+    }
+
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        scrollbar-gutter: stable both-edges;
+        flex-flow: column;
+    }
+
+    table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+        content: "--"
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        z-index: -100;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("/static/assets/background.png");
+        background-size: cover;
+        opacity: 2%;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    mark {
+        @apply bg-yellow-200/10 font-bold italic text-[unset] rounded;
+    }
+}
+
+@layer utilities {
+    .stack {
+        display: grid;
+        grid-template-areas: "a";
+
+        & > * {
+            grid-area: a;
+        }
+    }
+}
+
+input:user-invalid,
+select:user-invalid,
+form.invalid *:is(input, select) {
+    @apply border-red-500;
+
+    &:focus {
+        @apply ring-red-300;
+    }
+
+    & ~ .input_label {
+        @apply text-red-500;
+    }
+}
+
+input:focus ~ .input_label,
+input:not(:placeholder-shown) ~ .input_label,
+select:not(:has(option:checked[hidden])) ~ .input_label {
+    @apply -translate-y-6 scale-75 bg-white;
+}
+
+.dual-range-slider input[type="range"]::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    pointer-events: all !important;
+}
+
+.dual-range-slider input[type="range"]::-webkit-slider-thumb {
+    width: 30px;
+    height: 30px;
+    pointer-events: all !important;
+}
+
+@keyframes scale {
+    0% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(0.7);
+    }
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(0);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.tire {
+    animation: rotation 1800ms infinite linear;
+    transform-origin: 50% 50%;
+}
+
+.rim {
+    animation: rotation 1200ms infinite linear;
+    transform-origin: 50% 50%;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
