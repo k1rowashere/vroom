@@ -210,6 +210,7 @@ sorttable = {
     // it also gets .value for <input> fields.
 
     if (!node) return "";
+    if (!node.getAttribute) return "";
 
     hasInputs = (typeof node.getElementsByTagName == "function") &&
       node.getElementsByTagName("input").length;

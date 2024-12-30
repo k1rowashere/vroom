@@ -73,17 +73,16 @@ def car_catalog(request):
                     vm.model AS model,
                     vm.year AS year,
                     vm.rating AS rating,
-                    ARRAY_AGG(color) AS color,
-                    ARRAY_AGG(distinct image_url) AS image_urls
+                    vm.images,
+                    ARRAY_AGG(color) AS color
             FROM vehicle_models vm
                 JOIN vehicles v ON v.model_id = vm.id
-                LEFT JOIN vehicle_image vi ON vi.model_id = vm.id
             WHERE status = 'available'
                 AND (%(make)s IS NULL OR vm.make ILIKE %(make)s)
                 AND (%(model)s IS NULL OR vm.model ILIKE %(model)s)
                 AND price_per_day BETWEEN %(price_min)s AND %(price_max)s
                 AND year BETWEEN %(year_min)s AND %(year_max)s
-            GROUP BY vm.price_per_day, vm.price_per_hour, vm.make, vm.model, vm.year, vm.rating, vm.id
+            GROUP BY vm.id
             HAVING %(color)s IS NULL OR %(color)s = ANY(ARRAY_AGG(color))
         """, params)
         columns = [col[0] for col in cursor.description]

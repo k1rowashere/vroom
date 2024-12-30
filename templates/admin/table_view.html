@@ -5,64 +5,79 @@
   <script src="{{ static('js/sorttable.js') }}"></script>
 {% endblock head %}
 {% block main %}
-  {% set edit = True %}
-  <form id="table" hx-post="" class="m-10 overflow-x-scroll">
-    <table class="w-full bg-white/80 backdrop-blur-2xl sortable">
-      <thead>
-      <tr class="bg-gray-800 text-white rounded">
-        {% for column in columns %}
-          <th class="text-left py-3 px-4 uppercase font-semibold text-sm whitespace-nowrap">
-            {{ column }}
-          </th>
-        {% endfor %}
-        {% if edit %}
-          <th class="sorttable_nosort"></th>
-        {% endif %}
-      </tr>
-      </thead>
-      <tbody class="text-gray-800">
-      {% for row in data %}
-        <tr class="border-b even:bg-gray-50">
+  {% set api_save = "/admin/api/update_reservations" %}
+  <style>
+      input {
+          width: 10ch;
+      }
+  </style>
+  <form id="table" hx-post="{{ api_save }}">
+    {{ csrf_input }}
+    <div class="m-10 overflow-x-scroll">
+      <table class="w-full bg-white/80 backdrop-blur-2xl sortable">
+        <thead>
+        <tr class="bg-gray-800 text-white rounded">
           {% for column in columns %}
-            <td class="py-3 px-4">
-              <input name="{{ column }}"
-                     type="{{ types[loop.index0] }}"
-                     value="{{ row[loop.index0] or '' }}"
-                     placeholder="{{ defaults[loop.index0] }}"
-                     disabled
-              />
-            </td>
+            <th class="text-left py-3 px-4 uppercase font-semibold text-sm whitespace-nowrap">
+              {{ column }}
+            </th>
           {% endfor %}
-          {% if edit %}
-            <td>
-              <label class="px-4 hover:text-gray-500 m-auto has-[:checked]:text-teal-500 fa-solid fa-pen text-xl cursor-pointer">
-                <input type="checkbox"
-                       name="edit_row"
-                       value="{{ row[0] }}"
-                       class="hidden"
-                />
-              </label>
-            </td>
+          {% if editable %}
+            <th class="sorttable_nosort"></th>
           {% endif %}
         </tr>
-      {% else %}
-        <tr>
-          <td colspan="{{ columns|length }}"
-              class="text-center py-4 text-gray-500"
-          >
-            No data found
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="text-gray-800 max-h-[90dvh] overflow-y-scroll">
+        {% for row in data %}
+          <tr class="border-b even:bg-gray-200 odd:bg-gray-300">
+            {% for column in columns %}
+              <td class="py-3 px-4">
+                <input name="{{ column }}"
+                       class="disabled:border-gray-400 border-teal-700 enabled:bg-white"
+                       type="{{ types[loop.index0] or 'text' }}"
+                       value="{{ row[loop.index0] or '' }}"
+                       placeholder="{{ defaults[loop.index0] }}"
+                  {{ editables[loop.index0] and 'data-editable' }}
+                       disabled
+                />
+              </td>
+            {% endfor %}
+            {% if editable %}
+              <td class="sorttable_nosort">
+                <label class="px-4 hover:text-gray-500 m-auto
+              has-[:checked]:text-teal-700 fa-solid fa-pen text-xl
+              cursor-pointer"
+                >
+                  <input type="checkbox"
+                         name="edit_row"
+                         value="{{ row[0] }}"
+                         class="hidden"
+                  />
+                </label>
+              </td>
+            {% endif %}
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="{{ columns|length }}"
+                class="text-center py-4 text-gray-500"
+            >
+              No data found
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {{ button.button(text="Save Changes", type='submit') }}
   </form>
   <script>
     document.getElementById("table").addEventListener("input", function(event) {
       if (event.target.name === "edit_row") {
         const row = event.target.closest("tr");
         // enable editing of row
-        for (const input of row.querySelectorAll("input")) {
+        let selector = "input[data-editable]:not([name='edit_row'])";
+        for (const input of row.querySelectorAll(selector)) {
           input.disabled = !input.disabled;
         }
       }

@@ -6,7 +6,3 @@ class AppConfig(AppConfig):
     name = 'app'
 
     # create test user
-    def ready(self):
-        from django.contrib.auth.models import User
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser('admin', 'kirowashere.com', 'kirowashere')

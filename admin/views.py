@@ -1,14 +1,11 @@
-import json
+from urllib.parse import urlparse, parse_qs
 
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.db import connection
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.urls import path
-from django.views.decorators.http import require_GET, require_POST
-from django.views.generic import RedirectView
-
-from app.utils import highlight_partial_matches
 
 
 # TODO:
@@ -36,6 +33,7 @@ from app.utils import highlight_partial_matches
 # vm.heated_seats,
 
 
+@login_required(login_url='/admin/login')
 def reservations(request):
     # user = request.user
     # if not user.is_authenticated or not user.has_perm('app.view_reservation'):
@@ -47,7 +45,6 @@ def reservations(request):
                    r.owed_amount,
                    r.pickup,
                    r.dropoff,
-                   r.owed_amount,
                    c.name,
                    c.phone,
                    c.license_no,
@@ -62,20 +59,27 @@ def reservations(request):
         ''')
 
         columns = [col[0] for col in cursor.description]
-        types = [col[1] for col in cursor.description]
-        print(types)
         data = cursor.fetchall()
 
     ctx = {
         'columns': columns,
         'data': data,
         'defaults': [None] * len(columns),
-        # 'types': map_db_types(types)
+        'types': ['number', 'number', 'datetime', 'datetime', 'text', 'tel', 'text', 'text', 'text', 'checkbox'],
+        'editables': [False] + [True] * (len(columns) - 1),
+        'editable': True
     }
+    # TODO: pending reservation filter
 
     return render(request, 'admin/table_view.html', ctx)
 
 
+@login_required(login_url='/admin/login')
+def update_reservations(request):
+    pass
+
+
+@login_required(login_url='/admin/login')
 def customers(request):
     # user = request.user
     # if not user.is_authenticated or not user.has_perm('app.view_customers'):
@@ -97,6 +101,7 @@ def customers(request):
     return render(request, 'admin/customers.html', {'customers': results})
 
 
+@login_required
 def staff(request):
     # user = request.user
     # if not user.is_authenticated or not user.has_perm('app.view_staff'):
@@ -115,6 +120,12 @@ def staff(request):
     return render(request, 'admin/staff.html', {'staff': results})
 
 
+@login_required(login_url='/admin/login')
+def home(request):
+    return render(request, 'admin/home.html')
+
+
+@login_required(login_url='/admin/login')
 def vehicles(request):
     # user = request.user
     # if not user.is_authenticated or not user.has_perm('app.view_vehicles'):
@@ -140,11 +151,40 @@ def vehicles(request):
     return render(request, 'admin/vehicles.html', {'vehicles': results})
 
 
+def login_api(request):
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+
+    user = authenticate(username=email, password=password)
+
+    if user is None:
+        res = HttpResponse('<p id="login_error" class="text-red-500">Invalid Username or Password</p>', status=401)
+        res["HX-Retarget"] = "#login_error"
+        res["HX-Reswap"] = "outerHTML"
+        return res
+
+    login(request, user)
+    res = HttpResponse('Success')
+
+    referer = request.META.get('HTTP_REFERER')
+    if referer:
+        parsed_url = urlparse(referer)
+        query_params = parse_qs(parsed_url.query)
+        next_url = query_params.get('next', [None])[0]
+    else:
+        next_url = None
+
+    res['HX-Redirect'] = next_url
+    return res
+
+
 urlpatterns = [
-    path('', lambda r: render(r, 'admin/home.html')),
+    path('', home),
     path('reservations', reservations),
     path('customers', customers),
     path('staff', staff),
     path('vehicles', vehicles),
-    # path('login', RedirectView.as_view(url='/admin/login')),
+    path('login', lambda r: render(r, 'admin/login.html')),
+    path('api/update_reservations', update_reservations),
+    path('api/login', login_api),
 ]
