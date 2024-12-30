@@ -1,7 +1,8 @@
 {% for res in results %}
-  <div class="flex flex-row items-center">
-    {#        <img src="{{ res.image }}" class="w-16 h-16 object-cover" alt="{{ res.name }}">#}
-    {{ res.display_name|replace(' ', '&nbsp;')|safe }}  </div>
+  <a href="{{ res.url }}" class="flex flex-row items-center">
+    <img src="{{ res.image }}" class="w-16 h-16 object-cover" alt="{{ res.display_name }}">
+    {{ res.display_name|replace(' ', '&nbsp;')|safe }}  
+  </a>
 {% else %}
   No results found.
 {% endfor %}

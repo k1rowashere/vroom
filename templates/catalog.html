@@ -11,7 +11,8 @@
   <form class="flex flex-col top-28 gap-4 
     border-gray-200 rounded-lg shadow dark:bg-slate-800/80
     bg-white/80 dark:border-slate-700 backdrop-blur-2xl p-6"
-        hx-get="/api/html/vehicle_serach_pub/"
+        hx-get="/api/html/search_car_catalog/"
+        hx-target="#car_grid"
   >
     <h2 class="flex gap-2 text-2xl text-yellow-500 font-bold">
       <i class="fa-solid fa-filter"></i>
@@ -20,11 +21,12 @@
 
     {{ dual_slider.dual_slider(name='price_range', label='Price Range', min=0, max=1000) }}
     {{ date_range.date_range(label='Reservation Dates', name='reservation') }}
-    {{ selector.selector(options=options, name='vehicle_type', label='Vehicle Type', placeholder='Select Car Type') }}
-    {{ search_bar.search_bar(name='model', label='Vehicle Model', placeholder='Search car models...') }}
-    {{ button.button('Find', icon='fa-magnifying-glass') }}
+    {{ selector.selector(options=vehicle_types, name='vehicle_type', label='Vehicle Type', placeholder='Select Car Type') }}
+    {{ search_bar.search_bar(name='text_search', label='Vehicle Model', placeholder='Search car models...') }}
+    {{ button.button('Find', icon='fa-magnifying-glass', type='submit') }}
   </form>
   <div class="grid gap-4 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 w-full justify-center"
+       id="car_grid"
        hx-get="/api/html/search_car_catalog/"
        hx-trigger="load"
   >

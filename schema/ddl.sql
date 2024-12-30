@@ -19,6 +19,7 @@ create table if not exists public.vehicle_models
     make           text    not null,
     model          text    not null,
     year           integer not null,
+    product_url    text,
     price_per_day  numeric(10, 2),
     price_per_hour numeric(10, 2),
     images         text[]  not null default '{}',

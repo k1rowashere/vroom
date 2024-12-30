@@ -10,8 +10,8 @@
         {% include 'parts/toggle_favorite.html' %}
       {% endwith %}
     </form>
-    <a href="{{ vehicle.url }}">
-      <img class="rounded-t-lg" src="{{ vehicle.image_urls.0 }}"
+    <a href="{{ vehicle.url or '#' }}">
+      <img class="rounded-t-lg" height="10em" src="{{ vehicle.image_urls[0] }}"
            alt="product image"
       />
     </a>
@@ -28,10 +28,10 @@
         {% endwith %}
       </div>
       <div class="grid grid-cols-2 items-center gap-1 justify-between">
-        <span class="text-xl font-bold text-gray-900 dark:text-white 
-        whitespace-nowrap after:content-['/day'] after:text-gray-700 dark:after:text-gray-400 after:text-sm">
-          $ {{ vehicle.price_per_day }}
-        </span>
+{#        <span class="text-xl font-bold text-gray-900 dark:text-white #}
+{#        whitespace-nowrap after:content-['/day'] after:text-gray-700 dark:after:text-gray-400 after:text-sm">#}
+{#          $ {{ vehicle.price_per_day }}#}
+{#        </span>#}
         <span class="text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap after:content-['/hour'] after:text-gray-700 dark:after:text-gray-400 after:text-sm">
           $ {{ vehicle.price_per_hour }}
         </span>

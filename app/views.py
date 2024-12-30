@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import connection
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.urls import path
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import RedirectView
@@ -36,7 +36,18 @@ def checkout(request):
 
 
 def catalog(request):
-    return render(request, 'catalog.html')
+    ctx = {'vehicle_types': [
+        {'label': 'SUV', 'value': 'SUV', },
+        {'label': 'Sedan', 'value': 'Sedan', },
+        {'label': 'Truck', 'value': 'Truck', },
+        {'label': 'Van', 'value': 'Van', },
+        {'label': 'Coupe', 'value': 'Coupe', },
+        {'label': 'Convertible', 'value': 'Convertible', },
+        {'label': 'Wagon', 'value': 'Wagon', },
+        {'label': 'Hatchback', 'value': 'Hatchback'},
+    ]}
+
+    return render(request, 'catalog.html', ctx)
 
 
 def cart(request):
@@ -54,45 +65,50 @@ def cart(request):
 
 @require_GET
 def car_catalog(request):
+    def sanitize_param(param, default=None):
+        value = request.GET.get(param, default)
+        return value if value != '' else default
+
     params = {
-        'make': request.GET.get('make', None),
-        'model': request.GET.get('model', None),
-        'year_min': request.GET.get('year_min', 0),
-        'year_max': request.GET.get('year_max', 100000),
-        'price_min': request.GET.get('price_min', 0),
-        'price_max': request.GET.get('price_max', 100000),
-        'color': request.GET.get('color', None),
+        'text_search': sanitize_param('search_term'),
+        'price_min': sanitize_param('price_range_min', 0),
+        'price_max': sanitize_param('price_range_max', 100000),
+        'start_date': sanitize_param('reservation_start_date'),
+        'end_date': sanitize_param('reservation_end_date'),
+        'vehicle_type': sanitize_param('vehicle_type'),
     }
 
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT vm.id AS model_id,
-                    vm.price_per_day AS price_per_day,
-                    vm.price_per_hour AS price_per_hour,
-                    vm.make AS make,
-                    vm.model AS model,
-                    vm.year AS year,
-                    vm.rating AS rating,
-                    vm.images,
-                    ARRAY_AGG(color) AS color
+                   vm.price_per_day AS price_per_day,
+                   vm.price_per_hour AS price_per_hour,
+                   vm.make AS make,
+                   vm.model AS model,
+                   vm.year AS year,
+                   vm.rating AS rating,
+                   vm.images,
+                   vm.product_url AS url,
+                   ARRAY_AGG(color) AS color
             FROM vehicle_models vm
-                JOIN vehicles v ON v.model_id = vm.id
-            WHERE status = 'available'
-                AND (%(make)s IS NULL OR vm.make ILIKE %(make)s)
-                AND (%(model)s IS NULL OR vm.model ILIKE %(model)s)
-                AND price_per_day BETWEEN %(price_min)s AND %(price_max)s
-                AND year BETWEEN %(year_min)s AND %(year_max)s
+                 LEFT JOIN vehicles v ON v.model_id = vm.id
+            WHERE (%(vehicle_type)s IS NULL OR vm.type ILIKE %(vehicle_type)s)
+              AND (%(text_search)s IS NULL OR CONCAT(vm.make, ' ', vm.model, ' ', vm.year::TEXT) ILIKE %(text_search)s)
+              AND vm.price_per_hour BETWEEN %(price_min)s AND %(price_max)s
             GROUP BY vm.id
-            HAVING %(color)s IS NULL OR %(color)s = ANY(ARRAY_AGG(color))
-        """, params)
+        """, {
+            **params,
+            'text_search': f"%{params['text_search']}%" if params['text_search'] else None,
+        })
         columns = [col[0] for col in cursor.description]
         results = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     vehicles = [{
         'id': r['model_id'],
+        'url': r['url'],
         'display_name': f"{r['make']} {r['model']} ({r['year']})",
-        'vehicle_type': 'car',
-        'image_urls': r['image_urls'],
+        'vehicle_type': params['vehicle_type'] or 'car',  # Default to 'car' if not specified
+        'image_urls': r['images'],
         'rating': float(r['rating']),
         'price_per_day': r['price_per_day'],
         'price_per_hour': r['price_per_hour'],
@@ -173,7 +189,7 @@ urlpatterns = [
     path('favicon.ico', RedirectView.as_view(url='/static/assets/favicon.ico', permanent=True)),
     path('', lambda r: render(r, 'home.html')),
     path('cart/', cart),
-    path('catalog/', lambda r: render(r, 'catalog.html')),
+    path('catalog/', catalog),
     path('about/', about),
     path('checkout/', checkout),
     path('api/html/search_car_catalog/', car_catalog),
